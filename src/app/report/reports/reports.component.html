@@ -1,0 +1,63 @@
+<div class="container-fluid">
+  <div class="jumbotron">
+    <h1 class="display-4">Welcome, <strong>{{name }}</strong></h1>
+    <p class="lead">Check your appointment listings.</p>
+  </div>
+  <div class="row my-3">
+    <div class="col-md-4 pull-left">
+      <select class="form-control" name="date" #date (change)="checkDate(date)">
+        <option hidden [ngValue]="undefined" selected>Select Date</option>
+        <option value="all">All</option>
+        <option *ngFor="let date of getDates" [value]="date">{{date | date:'mediumDate'}}</option>
+      </select>
+    </div>
+    <div class="col-md-4  md-offset-3">
+      <select class="form-control" name="status" #status (change)="ViewBystatus(status)">
+        <option hidden [ngValue]="undefined" selected>Select Status</option>
+        <option value="open">Open</option>
+        <option value="closed">Closed</option>
+      </select>
+    </div>
+  </div>
+  <loader *ngIf="isLoad"></loader>
+  <div class="card" *ngIf="!isLoad">
+    <table class="table" *ngIf="appointMents.length >= 1 ; else nodata">
+      <thead class="thead-dark">
+        <tr>
+          <th scope="col">Sl No</th>
+          <th scope="col">Patient Name</th>
+          <th scope="col">Patient Email</th>
+          <th scope="col">Patient Phone No</th>
+          <th scope="col">Slot time</th>
+          <th scope="col">Status</th>
+          <th scope="col">Date</th>
+          <th scope="col">Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let apt of appointMents; let i = index" [hidden]="apt.appointment_status == 'cancelled'"
+          [ngStyle]="{'color':apt.appointment_status === 'open' ? '#593196' : '#d0391b' }">
+          <th scope="row">{{i+1}}</th>
+          <td>{{apt.patient_name }}</td>
+          <td>{{apt.patient_email}}</td>
+          <td>{{apt.patient_phone}}</td>
+          <td>{{apt.appointment_time}}</td>
+          <td>{{apt.appointment_status | titlecase}}</td>
+          <td>{{apt.appointment_date | date:'mediumDate'}}</td>
+          <td>
+            <select class="form-control" name="change" #change (change)="changeStatus(apt, change)">
+              <option hidden [ngValue]="undefined" selected>Change Status</option>
+              <option value="closed">Closed</option>
+              <option value="cancelled">Cancelled</option>
+            </select>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <ng-template #nodata>
+      <div class="alert alert-warning text-center">
+        No data Avilable
+      </div>
+    </ng-template>
+  </div>
+</div>

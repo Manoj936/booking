@@ -1,0 +1,104 @@
+<div class="container-fluid">
+  <div class="jumbotron">
+    <h1 class="display-4">Find Your specialist!</h1>
+    <p class="lead">Book your appointment.</p>
+  </div>
+  <div class="container">
+    <loader *ngIf="isLoad"></loader>
+    <div *ngIf="!isLoad">
+      <div class="row">
+        <div class="col-md-4" *ngFor="let doc of doctors">
+          <div class="card text-white bg-primary mb-3" style="max-width: 20rem;">
+            <div class="card-header"><strong>Avilability:</strong> {{doc.day_start_time}} to {{doc.day_end_time}}</div>
+            <div class="card-body">
+              <h4 class="card-title">{{doc.doctor_name | titlecase}}</h4>
+              <p class="card-text">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem
+                Ipsum has been the industry's standard dummy text ever since the 1500s,</p>
+              <button class="btn btn-md btn-secondary my-2 offset-md-3 offset-lg-3" data-toggle="modal"
+                data-target="#exampleModal" (click)="book(doc)">Book Appointment</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Book Appointment For {{docName | titlecase}}</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body" >
+          <div class="alert alert-success" *ngIf="showMsg">
+            <p>Your appointment Has been booked. Thank You</p>
+          </div>
+          <div class="alert alert-danger" *ngIf="showErrMsg">
+            <p>Sorry Something Unexpected happened. Try again.</p>
+          </div>
+        </div>
+        <div class="modal-body" *ngIf="!showErrMsg && !showMsg">
+            <form #f="ngForm" autocomplete="off" novalidate >
+              <div class="form-group">
+                <label for="recipient-name" class="col-form-label">Appointment Date:</label>
+                <input type="date" name="appointment_date" #appointment_date="ngModel" [(ngModel)]="appointment.aptDate" class="form-control" id="recipient-name" required>
+                <div *ngIf="appointment_date.touched && appointment_date.invalid">
+                  <small id="emailHelp" class="form-text text-danger"
+                  *ngIf="appointment_date.errors.required">This field is mandatory.</small> 
+              </div> 
+              </div>
+              <div class="form-group">
+                <label for="message-text" class="col-form-label">Select Time Slot:</label>
+                <select class="form-control" name="appointment_time" #appointment_time="ngModel" [(ngModel)]="appointment.aptTime" required>
+                  <option hidden [ngValue]="undefined" selected>Select a option</option>
+                  <option *ngFor="let slt of slots" [value]="slt">{{slt}}</option>
+                </select>
+                <div *ngIf="appointment_time.touched && appointment_time.invalid">
+                  <small id="emailHelp" class="form-text text-danger"
+                  *ngIf="appointment_time.errors.required">This field is mandatory.</small> 
+              </div> 
+              </div>
+              <div class="form-group">
+                <label for="recipient-name" class="col-form-label">Your Name:</label>
+                <input type="text" name="patient_name" placeholder="Enter Your Name"
+                 #patient_name="ngModel" [(ngModel)]="appointment.ptName" class="form-control" id="recipient-name" required>
+                <div *ngIf="patient_name.touched && patient_name.invalid">
+                  <small id="emailHelp" class="form-text text-danger"
+                  *ngIf="patient_name.errors.required">This field is mandatory.</small> 
+              </div> 
+              </div>
+              <div class="form-group">
+                <label for="recipient-name" class="col-form-label">Your Email:</label>
+                <input type="email" name="patient_email" #patient_email="ngModel" [(ngModel)]="appointment.ptEmail" class="form-control"
+                 id="recipient-name" placeholder="Enter You Email" required pattern="^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z-.]+$">
+                <div *ngIf="patient_email.touched && patient_email.invalid">
+                  <small id="emailHelp" class="form-text text-danger"
+                  *ngIf="patient_email.errors.required">This field is mandatory.</small> 
+                  <small id="emailHelp" class="form-text text-danger"
+                  *ngIf="patient_email.errors.pattern">Please check your email.</small> 
+              </div> 
+              </div>
+              <div class="form-group">
+                <label for="recipient-name" class="col-form-label">Your Phone No:</label>
+                <input type="text" name="patient_phone" #patient_phone="ngModel" 
+                placeholder="Mobile No With Country Code Without Space eg: +91" [(ngModel)]="appointment.ptPhone" class="form-control" id="recipient-name" required pattern="^\+[1-9]{1}[0-9]{3,14}$">
+                <div *ngIf="patient_phone.touched && patient_phone.invalid">
+                  <small id="emailHelp" class="form-text text-danger"
+                  *ngIf="patient_phone.errors.required">This field is mandatory.</small> 
+                  <small id="emailHelp" class="form-text text-danger"
+                  *ngIf="patient_phone.errors.pattern">Please check your contact no.</small> 
+              </div> 
+              </div>
+            </form>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal" >Close</button>
+          <button type="button" class="btn btn-primary" [disabled]="f.invalid" (click)="bookAppointment(f)">Book</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- modal -->
